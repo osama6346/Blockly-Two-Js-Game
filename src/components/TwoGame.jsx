@@ -6,19 +6,18 @@ const TwoGame = ({ actions }) => {
   const twoRef = useRef(null);
   const robotGroupRef = useRef(null);
 
-  const CANVAS_SIZE = { width: 500, height: 500 }; // Size of the game canvas
-  const ROBOT_SIZE = { width: 80, height: 120 }; // Size of the robot
+  const CANVAS_SIZE = { width: 500, height: 500 }; 
+  const ROBOT_SIZE = { width: 80, height: 120 }; 
 
   const isCollision = (x, y) => {
-    // Check if the robot is outside the canvas bounds
     const halfWidth = ROBOT_SIZE.width / 2;
     const halfHeight = ROBOT_SIZE.height / 2;
 
     return (
-      x - halfWidth < 0 || // Left boundary
-      x + halfWidth > CANVAS_SIZE.width || // Right boundary
-      y - halfHeight < 0 || // Top boundary
-      y + halfHeight > CANVAS_SIZE.height // Bottom boundary
+      x - halfWidth < 0 || 
+      x + halfWidth > CANVAS_SIZE.width || 
+      y - halfHeight < 0 || 
+      y + halfHeight > CANVAS_SIZE.height 
     );
   };
 

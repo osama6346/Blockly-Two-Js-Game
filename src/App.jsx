@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { BlocklyWorkspace } from "react-blockly";
-import * as Blockly from "blockly/core";
-import blocks from "./components/Blockly/CustomBlocks";
-import BlocksInitializer from "./components/Blockly/Initiliazer";
-import TwoGame from "./components/Blockly/TwoGame";
+import blocks from "./components/CustomBlocks";
+import BlocksInitializer from "./components/Initiliazer";
+import TwoGame from "./components/TwoGame";
 import "./index.css";
 
 BlocksInitializer();
@@ -15,32 +14,61 @@ const toolbox = {
 
 function App() {
   const [actions, setActions] = useState([]);
+  const lastDirectionRef = useRef(null); 
+  const lastActionTimeRef = useRef(Date.now());
 
-  const handleButtonClick = (actionType) => {
-    setActions((prevActions) => [...prevActions, actionType]);
+  const processBlocks = (block) => {
+    if (block.type === "turn") {
+      const directionValue = block.getFieldValue("DIRECTION");
+      const now = Date.now();
+      const timeSinceLastAction = now - lastActionTimeRef.current;
+
+      const allowRepeat = timeSinceLastAction > 1000;
+
+      if (directionValue !== lastDirectionRef.current || allowRepeat) {
+        lastDirectionRef.current = directionValue;
+        lastActionTimeRef.current = now; 
+
+        if (directionValue === "RIGHT") {
+          setActions((prev) => [...prev, "TURN_RIGHT"]);
+        } else if (directionValue === "LEFT") {
+          setActions((prev) => [...prev, "TURN_LEFT"]);
+        }
+      }
+    } else if (block.type === "repeat_until") {
+      let statementBlock = block.getInputTargetBlock("DO");
+      while (statementBlock) {
+        processBlocks(statementBlock);
+        statementBlock = statementBlock.getNextBlock();
+      }
+    } else if (block.type === "move_forward") {
+      setActions((prev) => [...prev, "MOVE_FORWARD"]);
+    }
   };
 
-  const handleJsonChange = (e) => {
-    console.log(e);
+  const handleWorkspaceChange = (workspace) => {
+    const allBlocks = workspace.getTopBlocks(true);
+    allBlocks.forEach((block) => {
+      processBlocks(block);
+    });
   };
 
   return (
     <div style={{ display: "flex", height: "100vh" }}>
-      <div style={{ flex: 1}}>
+      <div style={{ flex: 1 }}>
         <BlocklyWorkspace
-          onJsonChange={handleJsonChange}
-          className={"blocklyContainer"}
+          className="blocklyContainer"
           toolboxConfiguration={toolbox}
+          onWorkspaceChange={handleWorkspaceChange} 
         />
-        {/* Buttons to control the robot */}
         <div style={{ padding: "10px" }}>
-          <button onClick={() => handleButtonClick("MOVE_FORWARD")}>
+          <button onClick={() => setActions((prev) => [...prev, "MOVE_FORWARD"])}>
             Move Forward
           </button>
-          <button onClick={() => handleButtonClick("TURN_RIGHT")}>
+          <button onClick={() => setActions((prev) => [...prev, "TURN_RIGHT"])}>
             Turn Right
           </button>
-          <button onClick={() => handleButtonClick("TURN_LEFT")}>
+          <button onClick={() => setActions((prev) => [...prev, "TURN_LEFT"])}>
             Turn Left
           </button>
         </div>
