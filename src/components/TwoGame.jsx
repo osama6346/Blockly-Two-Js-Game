@@ -44,9 +44,6 @@ const TwoGame = ({ actions }) => {
         leftEye.fill = "white";
         leftEye.stroke = "black";
 
-        const rightEye = two.makeCircle(10, -75, 5);
-        rightEye.fill = "white";
-        rightEye.stroke = "black";
 
         const leftArm = two.makeRectangle(-50, 0, 10, 60);
         leftArm.fill = "#A9A9A9";
@@ -56,7 +53,7 @@ const TwoGame = ({ actions }) => {
         rightArm.fill = "#A9A9A9";
         rightArm.stroke = "black";
 
-        group.add(body, head, leftEye, rightEye, leftArm, rightArm);
+        group.add(body, head, leftEye, leftArm, rightArm);
         group.translation.set(250, 250); 
         robotGroupRef.current = group;
       }
@@ -93,10 +90,10 @@ const TwoGame = ({ actions }) => {
           break;
         }
         case "TURN_RIGHT":
-          group.rotation += Math.PI / 4; 
+          group.rotation += Math.PI / 2; 
           break;
         case "TURN_LEFT":
-          group.rotation -= Math.PI / 4; 
+          group.rotation -= Math.PI / 2; 
           break;
         default:
           break;
@@ -110,7 +107,6 @@ const TwoGame = ({ actions }) => {
     <div
       ref={gameRef}
       style={{
-        border: "1px solid black",
         width: `${CANVAS_SIZE.width}px`,
         height: `${CANVAS_SIZE.height}px`,
         backgroundColor: "#f0f0f0",

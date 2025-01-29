@@ -14,7 +14,7 @@ const toolbox = {
 
 function App() {
   const [actions, setActions] = useState([]);
-  const lastDirectionRef = useRef(null); 
+  const lastDirectionRef = useRef(null);
   const lastActionTimeRef = useRef(Date.now());
 
   const processBlocks = (block) => {
@@ -27,7 +27,7 @@ function App() {
 
       if (directionValue !== lastDirectionRef.current || allowRepeat) {
         lastDirectionRef.current = directionValue;
-        lastActionTimeRef.current = now; 
+        lastActionTimeRef.current = now;
 
         if (directionValue === "RIGHT") {
           setActions((prev) => [...prev, "TURN_RIGHT"]);
@@ -54,27 +54,25 @@ function App() {
   };
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      <div style={{ flex: 1 }}>
-        <BlocklyWorkspace
-          className="blocklyContainer"
-          toolboxConfiguration={toolbox}
-          onWorkspaceChange={handleWorkspaceChange} 
-        />
-        <div style={{ padding: "10px" }}>
-          <button onClick={() => setActions((prev) => [...prev, "MOVE_FORWARD"])}>
-            Move Forward
-          </button>
-          <button onClick={() => setActions((prev) => [...prev, "TURN_RIGHT"])}>
-            Turn Right
-          </button>
-          <button onClick={() => setActions((prev) => [...prev, "TURN_LEFT"])}>
-            Turn Left
-          </button>
+    <div className="App">
+      <div className="container">
+        <div className="blocklyContainerWrapper">
+          <BlocklyWorkspace
+            className="blocklyContainer"
+            toolboxConfiguration={toolbox}
+            onWorkspaceChange={handleWorkspaceChange}
+            
+          />
+          <div className="buttonContainer">
+            <button onClick={() => setActions((prev) => [...prev, "MOVE_FORWARD"])}>Move Forward</button>
+            <button onClick={() => setActions((prev) => [...prev, "TURN_RIGHT"])}>Turn Right</button>
+            <button onClick={() => setActions((prev) => [...prev, "TURN_LEFT"])}>Turn Left</button>
+          </div>
         </div>
-      </div>
-      <div style={{ flex: 1 }}>
-        <TwoGame actions={actions} />
+
+        <div className="twoGameContainer">
+          <TwoGame actions={actions} />
+        </div>
       </div>
     </div>
   );
